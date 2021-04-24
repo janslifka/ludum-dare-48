@@ -58,7 +58,7 @@ namespace Fish
             _anglerfish.OnLightOff += OnLightOff;
 
             _state = FishState.Default;
-            image.color = Color.white;
+//            image.color = Color.white;
             CancelInvoke();
         }
 
@@ -81,7 +81,7 @@ namespace Fish
 
         void Flee()
         {
-            image.color = Color.red;
+//            image.color = Color.red;
             var fleeDirection = (transform.position - _anglerfish.transform.position).normalized;
             _rigidbody.velocity = fleeDirection * fleeingSpeed;
             _state = FishState.Fleeing;
@@ -94,7 +94,7 @@ namespace Fish
         {
             _state = FishState.Default;
             _rigidbody.velocity = _currentDirection * _currentSpeed;
-            image.color = Color.white;
+//            image.color = Color.white;
         }
 
         void OnLightOn()
@@ -102,7 +102,7 @@ namespace Fish
             if (InLureArea && _state != FishState.Fleeing)
             {
                 _state = FishState.Lured;
-                image.color = Color.yellow;
+//                image.color = Color.yellow;
             }
         }
 

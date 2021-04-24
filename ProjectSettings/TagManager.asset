@@ -45,3 +45,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Fish
+    uniqueID: 326475487
+    locked: 0
+  - name: Anglerfish
+    uniqueID: 1108805661
+    locked: 0
