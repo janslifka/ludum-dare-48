@@ -25,7 +25,7 @@ public class GameManager : ITickable
     public void FishEaten()
     {
         _currentFish++;
-        _anglerfish.ResetDash();
+        _anglerfish.FishEaten();
 
         if (_currentFish == FishLimit)
         {

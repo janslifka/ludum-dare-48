@@ -52,7 +52,8 @@ namespace Fish
         (Vector3, Vector2) RandomFishPosition()
         {
             var unitCirclePoint = Random.insideUnitCircle.normalized;
-            var position = unitCirclePoint * _anglerfish.SpawnAreaRadius;
+            var center = (Vector2) _anglerfish.transform.position;
+            var position = center + unitCirclePoint * _anglerfish.SpawnAreaRadius;
 
             var rotation = Quaternion.AngleAxis(Random.Range(-60, 60), Vector3.forward);
             var direction = rotation * -unitCirclePoint;

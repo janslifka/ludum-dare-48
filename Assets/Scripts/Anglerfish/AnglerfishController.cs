@@ -1,3 +1,4 @@
+using System;
 using Camera;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -34,6 +35,10 @@ namespace Anglerfish
 
         public bool CanDash => _dashRemainingCooldown <= 0;
 
+        public event Action OnFishEaten;
+        public event Action OnLightOn;
+        public event Action OnLightOff;
+
 #if UNITY_EDITOR
         void OnDrawGizmos()
         {
@@ -49,11 +54,12 @@ namespace Anglerfish
             Gizmos.DrawWireSphere(position, eatingAreaRadius);
         }
 #endif
-        public void ResetDash()
+        public void FishEaten()
         {
+            OnFishEaten?.Invoke();
             _dashRemainingCooldown = 0;
         }
-
+        
         void Start()
         {
             _rigidbody = GetComponent<Rigidbody2D>();

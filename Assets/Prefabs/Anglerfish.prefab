@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 5259958579930465666}
   - component: {fileID: 5259958579930465667}
   - component: {fileID: 5259958579930465668}
-  - component: {fileID: 8518010860008675804}
+  - component: {fileID: 940125103074154777}
   m_Layer: 0
   m_Name: Anglerfish
   m_TagString: Anglerfish
@@ -203,10 +203,10 @@ MonoBehaviour:
   dashSpeed: 100
   dashDuration: 0.1
   dashCooldown: 7
-  eatingAreaRadius: 8
+  eatingAreaRadius: 12
   lureAreaRadius: 15
   spawnAreaRadius: 25
---- !u!58 &8518010860008675804
+--- !u!58 &940125103074154777
 CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
