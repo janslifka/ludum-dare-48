@@ -1,6 +1,7 @@
 using System;
 using Camera;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine.InputSystem;
 using Zenject;
 
@@ -19,6 +20,12 @@ namespace Anglerfish
         [Header("Light")] [SerializeField] float maxLightEnergy;
         [SerializeField] float lightEnergyPerFish;
         [SerializeField] float lightEnergyPerSecond;
+        [SerializeField] float defaultLightRadius;
+        [SerializeField] float turnOnLightRadius;
+        [SerializeField] Light2D light2d;
+        [SerializeField] float defaultLightEffectOpacity;
+        [SerializeField] float turnOnLightEffectOpacity;
+        [SerializeField] SpriteRenderer lightEffect;
 
         [Header("Areas")] [SerializeField] float eatingAreaRadius;
         [SerializeField] float lureAreaRadius;
@@ -84,7 +91,7 @@ namespace Anglerfish
 
             _lightEnergy = maxLightEnergy;
         }
-        
+
         void Update()
         {
             _dashRemainingCooldown = Mathf.Max(_dashRemainingCooldown - Time.deltaTime, 0);
@@ -98,6 +105,14 @@ namespace Anglerfish
             {
                 LightOff();
             }
+
+            var targetRadius = _lightOn ? turnOnLightRadius : defaultLightRadius;
+            light2d.pointLightOuterRadius = Mathf.Lerp(light2d.pointLightOuterRadius, targetRadius, 4 * Time.deltaTime);
+
+            var targetAlpha = _lightOn ? turnOnLightEffectOpacity : defaultLightEffectOpacity;
+            var color = lightEffect.color;
+            color.a = Mathf.Lerp(color.a, targetAlpha, 4 * Time.deltaTime);;
+            lightEffect.color = color;
         }
 
         void FixedUpdate()
@@ -137,7 +152,7 @@ namespace Anglerfish
         {
             LightOff();
         }
-        
+
         void PerformMove(InputAction.CallbackContext ctx)
         {
             _movement = ctx.ReadValue<Vector2>() * movementSpeed;
@@ -154,7 +169,7 @@ namespace Anglerfish
             _lightOn = false;
             OnLightOff?.Invoke();
         }
-        
+
         float LerpMove(float oldMove, float newMove)
         {
             return Mathf.Approximately(newMove, 0)
