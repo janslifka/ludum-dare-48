@@ -16,6 +16,10 @@ namespace Anglerfish
         [SerializeField] float dashDuration;
         [SerializeField] float dashCooldown;
 
+        [Header("Light")] [SerializeField] float maxLightEnergy;
+        [SerializeField] float lightEnergyPerFish;
+        [SerializeField] float lightEnergyPerSecond;
+
         [Header("Areas")] [SerializeField] float eatingAreaRadius;
         [SerializeField] float lureAreaRadius;
         [SerializeField] float spawnAreaRadius;
@@ -29,11 +33,16 @@ namespace Anglerfish
         bool _isDashing;
         float _dashRemainingCooldown;
 
+        bool _lightOn;
+        float _lightEnergy;
+
         public float EatingAreaRadius => eatingAreaRadius;
         public float LureAreaRadius => lureAreaRadius;
         public float SpawnAreaRadius => spawnAreaRadius;
 
         public bool CanDash => _dashRemainingCooldown <= 0;
+        public float LightEnergy => _lightEnergy;
+        public float MaxLightEnergy => maxLightEnergy;
 
         public event Action OnFishEaten;
         public event Action OnLightOn;
@@ -58,59 +67,37 @@ namespace Anglerfish
         {
             OnFishEaten?.Invoke();
             _dashRemainingCooldown = 0;
+            _lightEnergy = Mathf.Min(maxLightEnergy, _lightEnergy + lightEnergyPerFish);
         }
-        
+
         void Start()
         {
             _rigidbody = GetComponent<Rigidbody2D>();
 
             _inputActions = new InputActions();
             _inputActions.Enable();
-            _inputActions.Player.Move.performed += Move;
-            _inputActions.Player.Move.canceled += Move;
-            _inputActions.Player.Dash.performed += Dash;
-            _inputActions.Player.Light.performed += LightOn;
-            _inputActions.Player.Light.canceled += LightOff;
+            _inputActions.Player.Move.performed += PerformMove;
+            _inputActions.Player.Move.canceled += PerformMove;
+            _inputActions.Player.Dash.performed += PerformDash;
+            _inputActions.Player.Light.performed += PerformLightOn;
+            _inputActions.Player.Light.canceled += PerformLightOff;
+
+            _lightEnergy = maxLightEnergy;
         }
-
-        void Dash(InputAction.CallbackContext ctx)
-        {
-            if (_dashRemainingCooldown > 0) return;
-
-            var worldPos = cameraController.Camera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-            var direction = (worldPos - transform.position).normalized;
-
-            _rigidbody.velocity = direction * dashSpeed;
-            _isDashing = true;
-            _dashRemainingCooldown = dashCooldown;
-
-            Invoke(nameof(StopDash), dashDuration);
-        }
-
-        void StopDash()
-        {
-            _rigidbody.velocity = _rigidbody.velocity.normalized * movementSpeed;
-            _isDashing = false;
-        }
-
-        void LightOn(InputAction.CallbackContext ctx)
-        {
-            Debug.Log("light on");
-        }
-
-        void LightOff(InputAction.CallbackContext ctx)
-        {
-            Debug.Log("light off");
-        }
-
-        void Move(InputAction.CallbackContext ctx)
-        {
-            _movement = ctx.ReadValue<Vector2>() * movementSpeed;
-        }
-
+        
         void Update()
         {
             _dashRemainingCooldown = Mathf.Max(_dashRemainingCooldown - Time.deltaTime, 0);
+
+            if (_lightOn)
+            {
+                _lightEnergy = Mathf.Max(0, _lightEnergy - lightEnergyPerSecond * Time.deltaTime);
+            }
+
+            if (_lightEnergy <= 0)
+            {
+                LightOff();
+            }
         }
 
         void FixedUpdate()
@@ -123,6 +110,51 @@ namespace Anglerfish
             _rigidbody.velocity = new Vector2(x, y);
         }
 
+        void PerformDash(InputAction.CallbackContext ctx)
+        {
+            if (_dashRemainingCooldown > 0) return;
+
+            var worldPos = cameraController.Camera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            var direction = ((Vector2) (worldPos - transform.position)).normalized;
+
+            _rigidbody.velocity = direction * dashSpeed;
+            _isDashing = true;
+            _dashRemainingCooldown = dashCooldown;
+
+            Invoke(nameof(StopDash), dashDuration);
+        }
+
+        void PerformLightOn(InputAction.CallbackContext ctx)
+        {
+            if (_lightEnergy > 0)
+            {
+                _lightOn = true;
+                OnLightOn?.Invoke();
+            }
+        }
+
+        void PerformLightOff(InputAction.CallbackContext ctx)
+        {
+            LightOff();
+        }
+        
+        void PerformMove(InputAction.CallbackContext ctx)
+        {
+            _movement = ctx.ReadValue<Vector2>() * movementSpeed;
+        }
+
+        void StopDash()
+        {
+            _rigidbody.velocity = _rigidbody.velocity.normalized * movementSpeed;
+            _isDashing = false;
+        }
+
+        void LightOff()
+        {
+            _lightOn = false;
+            OnLightOff?.Invoke();
+        }
+        
         float LerpMove(float oldMove, float newMove)
         {
             return Mathf.Approximately(newMove, 0)

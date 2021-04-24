@@ -200,11 +200,14 @@ MonoBehaviour:
   movementSpeed: 2
   lerpFastConst: 0.7
   lerpSlowConst: 0.05
-  dashSpeed: 100
-  dashDuration: 0.1
+  dashSpeed: 60
+  dashDuration: 0.15
   dashCooldown: 7
+  maxLightEnergy: 10
+  lightEnergyPerFish: 4
+  lightEnergyPerSecond: 1
   eatingAreaRadius: 12
-  lureAreaRadius: 15
+  lureAreaRadius: 17.5
   spawnAreaRadius: 25
 --- !u!58 &940125103074154777
 CircleCollider2D:

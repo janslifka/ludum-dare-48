@@ -10,7 +10,9 @@ namespace UI
     {
         [SerializeField] Text fishEatenText;
         [SerializeField] Text timeText;
+        [SerializeField] Text lightText;
         [SerializeField] GameObject dashIndicator;
+        
         [SerializeField] GameObject gameCompletePanel;
         [SerializeField] Text timeValueText;
 
@@ -36,6 +38,7 @@ namespace UI
         {
             dashIndicator.SetActive(_anglerfish.CanDash);
             timeText.text = $"Time: {_gameManager.CurrentTime}";
+            lightText.text = $"Light: {_anglerfish.LightEnergy} / {_anglerfish.MaxLightEnergy}";
             fishEatenText.text = $"Fish eaten: {_gameManager.CurrentFish}";
         }
 

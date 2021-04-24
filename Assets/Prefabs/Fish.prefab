@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4189295860239439484}
   - component: {fileID: -8517647647821946524}
   - component: {fileID: 906368693924472987}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fish
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50,7 +50,8 @@ MonoBehaviour:
   movementSpeed: 2
   movementSpeedDev: 0.3
   fleeingSpeed: 6
-  fleeingTime: 4
+  fleeingTime: 3
+  loosingInterestTime: 2
 --- !u!50 &-8517647647821946524
 Rigidbody2D:
   serializedVersion: 4
@@ -98,7 +99,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8415525314951218593}
   - component: {fileID: 8415525314951218598}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}

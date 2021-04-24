@@ -1,7 +1,6 @@
 using System;
 using Anglerfish;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 using Random = UnityEngine.Random;
 
@@ -25,6 +24,8 @@ namespace Fish
         [SerializeField] float fleeingSpeed;
         [SerializeField] float fleeingTime;
 
+        [SerializeField] float loosingInterestTime;
+
         [Inject] AnglerfishController _anglerfish;
 
         public event Action<FishController> OnEaten;
@@ -35,7 +36,13 @@ namespace Fish
 
         float _currentSpeed;
         Vector2 _currentDirection;
+
+        float AnglerFishDistance => Vector3.Distance(transform.position, _anglerfish.transform.position);
         
+        bool InFeedingArea => AnglerFishDistance <= _anglerfish.EatingAreaRadius;
+
+        bool InLureArea => AnglerFishDistance <= _anglerfish.LureAreaRadius;
+
         void Initialize(Vector3 position, Vector2 direction)
         {
             transform.position = position;
@@ -47,18 +54,26 @@ namespace Fish
             _rigidbody.velocity = _currentDirection * _currentSpeed;
 
             _anglerfish.OnFishEaten += OnFishEaten;
-            
+            _anglerfish.OnLightOn += OnLightOn;
+            _anglerfish.OnLightOff += OnLightOff;
+
+            _state = FishState.Default;
             image.color = Color.white;
             CancelInvoke();
         }
 
+        void FixedUpdate()
+        {
+            if (_state == FishState.Lured)
+            {
+                var direction = (_anglerfish.transform.position - transform.position).normalized;
+                _rigidbody.velocity = direction * _currentSpeed;
+            }
+        }
+
         void OnFishEaten()
         {
-            var distance = Vector3.Distance(transform.position, _anglerfish.transform.position);
-            
-            Debug.Log($"Fish eaten, distance: {distance}, radius: {_anglerfish.EatingAreaRadius}");
-            
-            if (distance <= _anglerfish.EatingAreaRadius)
+            if (InFeedingArea)
             {
                 Flee();
             }
@@ -66,19 +81,38 @@ namespace Fish
 
         void Flee()
         {
-            Debug.Log("THIS FISH FLEE");
             image.color = Color.red;
             var fleeDirection = (transform.position - _anglerfish.transform.position).normalized;
             _rigidbody.velocity = fleeDirection * fleeingSpeed;
+            _state = FishState.Fleeing;
 
             CancelInvoke();
-            Invoke(nameof(StopFleeing), fleeingTime);
+            Invoke(nameof(BackToDefault), fleeingTime);
         }
 
-        void StopFleeing()
+        void BackToDefault()
         {
+            _state = FishState.Default;
             _rigidbody.velocity = _currentDirection * _currentSpeed;
             image.color = Color.white;
+        }
+
+        void OnLightOn()
+        {
+            if (InLureArea && _state != FishState.Fleeing)
+            {
+                _state = FishState.Lured;
+                image.color = Color.yellow;
+            }
+        }
+
+        void OnLightOff()
+        {
+            if (_state == FishState.Lured)
+            {
+                _state = FishState.LoosingInterest;
+                Invoke(nameof(BackToDefault), loosingInterestTime);
+            }
         }
 
         void OnCollisionEnter2D(Collision2D other)
