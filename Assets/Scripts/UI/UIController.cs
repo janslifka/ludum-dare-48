@@ -8,11 +8,13 @@ namespace UI
 {
     public class UIController : MonoBehaviour
     {
-        [SerializeField] Text fishEatenText;
+        [Header("Game")]
         [SerializeField] Text timeText;
-        [SerializeField] Text lightText;
-        [SerializeField] GameObject dashIndicator;
+        [SerializeField] Image dashCover;
+        [SerializeField] Image lightCover;
+        [SerializeField] Image fishEatenBar;
         
+        [Header("Game Complete")]
         [SerializeField] GameObject gameCompletePanel;
         [SerializeField] Text timeValueText;
 
@@ -22,6 +24,16 @@ namespace UI
         public void Restart()
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        public void Quit()
+        {
+            Application.Quit();
+        }
+
+        public void Menu()
+        {
+            SceneManager.LoadScene("Menu");
         }
         
         void Start()
@@ -36,15 +48,15 @@ namespace UI
 
         void Update()
         {
-            dashIndicator.SetActive(_anglerfish.CanDash);
-            timeText.text = $"Time: {_gameManager.CurrentTime}";
-            lightText.text = $"Light: {_anglerfish.LightEnergy} / {_anglerfish.MaxLightEnergy}";
-            fishEatenText.text = $"Fish eaten: {_gameManager.CurrentFish}";
+            timeText.text = Utils.FormatTime(_gameManager.CurrentTime);
+            dashCover.fillAmount = _anglerfish.DashRemainingCooldown / _anglerfish.DashCooldown;
+            lightCover.fillAmount = 1 - _anglerfish.LightEnergy / _anglerfish.MaxLightEnergy;
+            fishEatenBar.fillAmount = (float) _gameManager.CurrentFish / GameManager.FishLimit;
         }
 
         void OnGameFinished(float time)
         {
-            timeValueText.text = $"{time}";
+            timeValueText.text = Utils.FormatTime(time);
             gameCompletePanel.SetActive(true);
         }
     }

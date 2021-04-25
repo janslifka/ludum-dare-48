@@ -5,7 +5,8 @@ using Zenject;
 
 public class GameManager : ITickable
 {
-    const int FishLimit = 20;
+//    public const int FishLimit = 20;
+    public const int FishLimit = 2;
     
     [Inject] AnglerfishController _anglerfish;
     

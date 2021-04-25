@@ -31,7 +31,7 @@ namespace Anglerfish
         [SerializeField] float lureAreaRadius;
         [SerializeField] float spawnAreaRadius;
 
-        [Inject] CameraController cameraController;
+        [Inject] CameraController _cameraController;
 
         InputActions _inputActions;
         Rigidbody2D _rigidbody;
@@ -47,7 +47,9 @@ namespace Anglerfish
         public float LureAreaRadius => lureAreaRadius;
         public float SpawnAreaRadius => spawnAreaRadius;
 
-        public bool CanDash => _dashRemainingCooldown <= 0;
+        public float DashRemainingCooldown => _dashRemainingCooldown;
+        public float DashCooldown => dashCooldown;
+
         public float LightEnergy => _lightEnergy;
         public float MaxLightEnergy => maxLightEnergy;
 
@@ -90,6 +92,16 @@ namespace Anglerfish
             _inputActions.Player.Light.canceled += PerformLightOff;
 
             _lightEnergy = maxLightEnergy;
+            _lightOn = false;
+        }
+
+        void OnDestroy()
+        {
+            _inputActions.Player.Move.performed -= PerformMove;
+            _inputActions.Player.Move.canceled -= PerformMove;
+            _inputActions.Player.Dash.performed -= PerformDash;
+            _inputActions.Player.Light.performed -= PerformLightOn;
+            _inputActions.Player.Light.canceled -= PerformLightOff;
         }
 
         void Update()
@@ -129,7 +141,7 @@ namespace Anglerfish
         {
             if (_dashRemainingCooldown > 0) return;
 
-            var worldPos = cameraController.Camera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            var worldPos = _cameraController.Camera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             var direction = ((Vector2) (worldPos - transform.position)).normalized;
 
             _rigidbody.velocity = direction * dashSpeed;
