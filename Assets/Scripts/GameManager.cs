@@ -5,8 +5,7 @@ using Zenject;
 
 public class GameManager : ITickable
 {
-//    public const int FishLimit = 20;
-    public const int FishLimit = 2;
+    public const int FishLimit = 20;
     
     [Inject] AnglerfishController _anglerfish;
     
@@ -30,6 +29,7 @@ public class GameManager : ITickable
 
         if (_currentFish == FishLimit)
         {
+            Utils.SaveBestTime(_currentTime);
             OnGameFinished?.Invoke(_currentTime);
         }
     }

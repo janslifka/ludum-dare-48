@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace Menu
 {
@@ -7,6 +8,13 @@ namespace Menu
     {
         [SerializeField] GameObject mainMenu;
         [SerializeField] GameObject credits;
+        [SerializeField] Text bestTimeText;
+
+        void Start()
+        {
+            var bestTime = Utils.GetBestTime();
+            bestTimeText.text = bestTime > 0 ? Utils.FormatTime(bestTime) : "-";
+        }
 
         public void OpenMainMenu()
         {

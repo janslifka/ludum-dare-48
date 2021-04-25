@@ -602,6 +602,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainMenu: {fileID: 1679258096}
   credits: {fileID: 170525634}
+  bestTimeText: {fileID: 1640370294}
 --- !u!1 &657963653
 GameObject:
   m_ObjectHideFlags: 0
