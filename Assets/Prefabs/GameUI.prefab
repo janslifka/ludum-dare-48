@@ -410,13 +410,14 @@ GameObject:
   - component: {fileID: 4544322732673036831}
   - component: {fileID: 4382795034804636342}
   - component: {fileID: 5665830034246378532}
+  - component: {fileID: 9017482717934050008}
   m_Layer: 5
   m_Name: GameFinishedPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4544322732673036831
 RectTransform:
   m_ObjectHideFlags: 0
@@ -479,6 +480,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &9017482717934050008
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2979283192630136583}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &3339495961701068687
 GameObject:
   m_ObjectHideFlags: 0
@@ -1334,11 +1347,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f68441e2c00ab48e091171d419f65733, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameUIPanel: {fileID: 683073411452786734}
   timeText: {fileID: 2974307932648730233}
   dashCover: {fileID: 328247102651723707}
   lightCover: {fileID: 5790273212918186186}
   fishEatenBar: {fileID: 4643884027779720601}
   gameCompletePanel: {fileID: 2979283192630136583}
+  gameCompleteCanvasGroup: {fileID: 9017482717934050008}
   timeValueText: {fileID: 158458514644348558}
 --- !u!1 &6575819554498176833
 GameObject:
