@@ -8,6 +8,7 @@ TagManager:
   - LureArea
   - EatingArea
   - Anglerfish
+  - AmbientSound
   layers:
   - Default
   - TransparentFX

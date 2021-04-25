@@ -33,6 +33,9 @@ namespace Anglerfish
 
         [Header("Animator")] [SerializeField] Animator animator;
 
+        [Header("Sound")] [SerializeField] AudioSource lightAudio;
+        [SerializeField] AudioSource biteAudio;
+
         [Inject] CameraController _cameraController;
 
         InputActions _inputActions;
@@ -82,7 +85,8 @@ namespace Anglerfish
             OnFishEaten?.Invoke();
             _dashRemainingCooldown = 0;
             _lightEnergy = Mathf.Min(maxLightEnergy, _lightEnergy + lightEnergyPerFish);
-            
+         
+            biteAudio.Play();
             animator.SetTrigger(Eat);
         }
 
@@ -165,6 +169,7 @@ namespace Anglerfish
             if (_lightEnergy > 0)
             {
                 _lightOn = true;
+                lightAudio.Play();
                 OnLightOn?.Invoke();
             }
         }
@@ -188,6 +193,7 @@ namespace Anglerfish
         void LightOff()
         {
             _lightOn = false;
+            lightAudio.Stop();
             OnLightOff?.Invoke();
         }
 
