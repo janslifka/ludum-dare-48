@@ -31,11 +31,16 @@ namespace Anglerfish
         [SerializeField] float lureAreaRadius;
         [SerializeField] float spawnAreaRadius;
 
+        [Header("Animator")] [SerializeField] Animator animator;
+
         [Inject] CameraController _cameraController;
 
         InputActions _inputActions;
         Rigidbody2D _rigidbody;
         Vector2 _movement;
+        
+        static readonly int Dash = Animator.StringToHash("Dash");
+        static readonly int Eat = Animator.StringToHash("Eat");
 
         bool _isDashing;
         float _dashRemainingCooldown;
@@ -77,6 +82,8 @@ namespace Anglerfish
             OnFishEaten?.Invoke();
             _dashRemainingCooldown = 0;
             _lightEnergy = Mathf.Min(maxLightEnergy, _lightEnergy + lightEnergyPerFish);
+            
+            animator.SetTrigger(Eat);
         }
 
         void Start()
@@ -147,6 +154,8 @@ namespace Anglerfish
             _rigidbody.velocity = direction * dashSpeed;
             _isDashing = true;
             _dashRemainingCooldown = dashCooldown;
+            
+            animator.SetTrigger(Dash);
 
             Invoke(nameof(StopDash), dashDuration);
         }
